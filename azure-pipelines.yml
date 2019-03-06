@@ -20,7 +20,7 @@ strategy:
 container: my_container
  
 services:
-  postgres: $[ variables['postgresService'] ]
+  postgres: $('postgresService')
  
 steps:
 - script: |
