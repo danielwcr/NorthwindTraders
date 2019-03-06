@@ -1,17 +1,27 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
-trigger:
-- master
-
+resources:
+  containers:
+  - container: my_container
+    image: danielwcr/ubuntuwithpostgresqlclient
+  - container: pg11
+    image: postgres:11
+  - container: pg10
+    image: postgres:10
+ 
 pool:
-  vmImage: 'Ubuntu-16.04'
-
-variables:
-  buildConfiguration: 'Release'
-
+  vmImage: 'ubuntu-16.04'
+ 
+strategy:
+  matrix:
+    postgres11:
+      postgresService: pg11
+    postgres10:
+      postgresService: pg10
+ 
+container: my_container
+ 
+services:
+  postgres: $[ variables['postgresService'] ]
+ 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+- script: |
+    psql --host=postgres --username=postgres --command="SELECT 1;"
